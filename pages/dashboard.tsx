@@ -2,13 +2,15 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
 import type { GetServerSideProps } from 'next';
 import type { User } from '@supabase/supabase-js';
+import { useEffect } from 'react';
 
 type Props = { user: User };
+type UserMetadata = { full_name?: string; avatar_url?: string };
 
 export default function DashboardPage({ user }: Props) {
   const supabase = useSupabaseClient();
   const userEmail = user.email ?? null;
-  const meta = user.user_metadata as { avatar_url?: string } | undefined;
+  const meta = user.user_metadata as UserMetadata | undefined;
   const avatarUrl = meta?.avatar_url ?? null;
 
   const handleLogout = async () => {
@@ -16,6 +18,28 @@ export default function DashboardPage({ user }: Props) {
     // A hard redirect avoids any stale state
     window.location.href = '/';
   };
+
+  // Ensure a profile row exists for the signed-in user (MVP sync)
+  useEffect(() => {
+    const ensureProfile = async () => {
+      if (!user?.id) return;
+      const { data } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+
+      if (!data) {
+        await supabase.from('profiles').insert({
+          id: user.id,
+          email: user.email,
+          name: (user.user_metadata as UserMetadata)?.full_name ?? '',
+          avatar_url: (user.user_metadata as UserMetadata)?.avatar_url ?? ''
+        });
+      }
+    };
+    ensureProfile();
+  }, [supabase, user]);
 
   return (
     <div style={{ padding: '2rem' }}>
