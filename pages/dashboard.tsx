@@ -1,34 +1,20 @@
-import { useEffect, useState } from 'react';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { useSession } from '@supabase/auth-helpers-react';
-import { useRouter } from 'next/router';
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
+import type { GetServerSideProps } from 'next';
+import type { User } from '@supabase/supabase-js';
 
-export default function DashboardPage() {
+type Props = { user: User };
+
+export default function DashboardPage({ user }: Props) {
   const supabase = useSupabaseClient();
-  const session = useSession();
-  const router = useRouter();
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    // If no session after hydration, redirect to landing for MVP protection
-    if (session === null) {
-      router.replace('/');
-      return;
-    }
-
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUserEmail(user?.email ?? null);
-      const meta = user?.user_metadata as { avatar_url?: string } | undefined;
-      setAvatarUrl(meta?.avatar_url ?? null);
-    };
-    getUser();
-  }, [supabase, session, router]);
+  const userEmail = user.email ?? null;
+  const meta = user.user_metadata as { avatar_url?: string } | undefined;
+  const avatarUrl = meta?.avatar_url ?? null;
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    router.replace('/');
+    // A hard redirect avoids any stale state
+    window.location.href = '/';
   };
 
   return (
@@ -52,3 +38,22 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+  const supabase = createPagesServerClient(ctx);
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    return {
+      redirect: { destination: '/', permanent: false },
+    };
+  }
+
+  return {
+    props: {
+      user: session.user,
+    },
+  };
+};
