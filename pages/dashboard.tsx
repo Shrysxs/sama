@@ -435,6 +435,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   return {
     props: {
       user: session.user,
+      initialTools: [],
+      initialSubscriptions: [],
     },
   };
 };
