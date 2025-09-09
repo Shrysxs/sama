@@ -85,10 +85,10 @@ export default function Discover() {
       const params = new URLSearchParams();
       if (searchQuery) params.append('q', searchQuery);
       if (filters.category) params.append('category', filters.category);
-      if (filters.pricing_model?.length) {
-        filters.pricing_model.forEach(model => params.append('pricing_model', model));
+      if (filters.pricing_model) {
+        params.append('pricing_model', filters.pricing_model);
       }
-      if (filters.rating_min) params.append('rating_min', filters.rating_min.toString());
+      // Rating filter removed for now
       if (filters.sort_by) params.append('sort_by', filters.sort_by);
       if (filters.sort_order) params.append('sort_order', filters.sort_order);
 
