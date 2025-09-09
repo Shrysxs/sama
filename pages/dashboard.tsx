@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
@@ -53,31 +53,30 @@ export default function DashboardPage({ user, initialTools, initialSubscriptions
     ensureProfile();
   }, [supabase, user]);
 
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     if (tools.length === 0) return;
-    
     try {
       const analyticsData = await Promise.all(
         tools.map(async (tool) => {
-          const response = await fetch(`/api/analytics/${tool.id}`);
-          if (response.ok) {
-            const data = await response.json();
-            return { toolId: tool.id, toolName: tool.name, ...data };
-          }
-          return null;
+          const res = await fetch(`/api/analytics/${tool.id}`);
+          if (!res.ok) return null;
+          const data = await res.json();
+          return { toolId: tool.id, toolName: tool.name, ...data };
         })
       );
-      setAnalytics(analyticsData.filter(Boolean));
-    } catch (error) {
-      console.error('Error fetching analytics:', error);
+      const cleaned = analyticsData.filter(Boolean);
+      setAnalytics(cleaned);
+    } catch (err) {
+      console.error('Error fetching analytics:', err);
     }
-  };
+  }, [tools]);
 
   useEffect(() => {
-    if (activeTab === 'analytics') {
-      fetchAnalytics();
-    }
-  }, [activeTab, tools]);
+    if (activeTab !== 'analytics') return;
+    // Avoid re-fetching if already loaded for current tools set
+    if (analytics && Array.isArray(analytics) && analytics.length > 0) return;
+    fetchAnalytics();
+  }, [activeTab, fetchAnalytics]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
