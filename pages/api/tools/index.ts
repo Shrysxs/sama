@@ -102,7 +102,7 @@ async function handleGetTools(req: NextApiRequest, res: NextApiResponse, supabas
     // Get facets for filtering
     const facets = await getFacets(supabase, { q, category, tags, pricing_model, tech_stack, rating_min });
 
-    const result: SearchResult = {
+    const result = {
       tools: processedTools || [],
       total_count: count || 0,
       page: pageNum,
