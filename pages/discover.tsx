@@ -198,7 +198,7 @@ export default function Discover() {
                   <option value="">All Categories</option>
                   {categories.map(category => (
                     <option key={category.id} value={category.id}>
-                      {category.icon} {category.name}
+                      {category.name}
                     </option>
                   ))}
                 </select>
@@ -207,44 +207,20 @@ export default function Discover() {
               {/* Pricing Model */}
               <div className="mb-6">
                 <h4 className="text-sm font-medium text-gray-900 mb-3">Pricing</h4>
-                <div className="space-y-2">
-                  {(['FREE', 'FREEMIUM', 'SUBSCRIPTION', 'PAY_PER_USE', 'ONE_TIME'] as PricingModel[]).map(model => (
-                    <label key={model} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={filters.pricing_model?.includes(model) || false}
-                        onChange={(e) => {
-                          const current = filters.pricing_model || [];
-                          if (e.target.checked) {
-                            handleFilterChange('pricing_model', [...current, model]);
-                          } else {
-                            handleFilterChange('pricing_model', current.filter(m => m !== model));
-                          }
-                        }}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                      <span className="ml-2 text-sm text-gray-700 capitalize">
-                        {model.toLowerCase().replace('_', ' ')}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Rating */}
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-900 mb-3">Minimum Rating</h4>
                 <select
-                  value={filters.rating_min || ''}
-                  onChange={(e) => handleFilterChange('rating_min', e.target.value ? parseFloat(e.target.value) : undefined)}
+                  value={filters.pricing_model || ''}
+                  onChange={(e) => handleFilterChange('pricing_model', e.target.value || undefined)}
                   className="w-full border-gray-300 rounded-md text-sm"
                 >
-                  <option value="">Any Rating</option>
-                  <option value="4">4+ Stars</option>
-                  <option value="3">3+ Stars</option>
-                  <option value="2">2+ Stars</option>
+                  <option value="">All Pricing</option>
+                  <option value="FREE">Free</option>
+                  <option value="FREEMIUM">Freemium</option>
+                  <option value="PAID">Paid</option>
+                  <option value="USAGE_BASED">Usage Based</option>
                 </select>
               </div>
+
+              {/* Rating filter omitted for now to simplify types */}
 
               {/* Sort */}
               <div>
@@ -313,24 +289,22 @@ export default function Discover() {
 }
 
 function ToolCard({ tool }: { tool: Tool }) {
-  const getPricingLabel = (model: PricingModel) => {
+  const getPricingLabel = (model: Tool['pricing_model']) => {
     switch (model) {
       case 'FREE': return 'Free';
       case 'FREEMIUM': return 'Freemium';
-      case 'SUBSCRIPTION': return 'Subscription';
-      case 'PAY_PER_USE': return 'Pay per Use';
-      case 'ONE_TIME': return 'One-time';
+      case 'PAID': return 'Paid';
+      case 'USAGE_BASED': return 'Usage Based';
       default: return model;
     }
   };
 
-  const getPricingColor = (model: PricingModel) => {
+  const getPricingColor = (model: Tool['pricing_model']) => {
     switch (model) {
       case 'FREE': return 'bg-green-100 text-green-800';
       case 'FREEMIUM': return 'bg-blue-100 text-blue-800';
-      case 'SUBSCRIPTION': return 'bg-purple-100 text-purple-800';
-      case 'PAY_PER_USE': return 'bg-yellow-100 text-yellow-800';
-      case 'ONE_TIME': return 'bg-gray-100 text-gray-800';
+      case 'PAID': return 'bg-purple-100 text-purple-800';
+      case 'USAGE_BASED': return 'bg-yellow-100 text-yellow-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -341,24 +315,14 @@ function ToolCard({ tool }: { tool: Tool }) {
         <div className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center space-x-3">
-              {tool.logo_url ? (
-                <img
-                  src={tool.logo_url}
-                  alt={`${tool.name} logo`}
-                  width={40}
-                  height={40}
-                  className="rounded-lg"
-                />
-              ) : (
-                <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <span className="text-gray-500 font-medium">
-                    {tool.name.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-              )}
+              <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                <span className="text-gray-500 font-medium">
+                  {tool.name.charAt(0).toUpperCase()}
+                </span>
+              </div>
               <div>
                 <h3 className="font-semibold text-gray-900">{tool.name}</h3>
-                <p className="text-sm text-gray-600">{tool.tagline}</p>
+                <p className="text-sm text-gray-600 line-clamp-1">{tool.description}</p>
               </div>
             </div>
             <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPricingColor(tool.pricing_model)}`}>
@@ -372,20 +336,20 @@ function ToolCard({ tool }: { tool: Tool }) {
 
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4 text-sm text-gray-500">
-              {tool.rating_count > 0 && (
+              {tool.review_count > 0 && (
                 <div className="flex items-center space-x-1">
                   <svg className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
-                  <span>{tool.rating_average.toFixed(1)}</span>
+                  <span>{tool.average_rating.toFixed(1)}</span>
                 </div>
               )}
-              <span>{tool.view_count} views</span>
+              <span>{tool.usage_count} uses</span>
             </div>
 
             {tool.category && (
               <span className="text-xs text-gray-500">
-                {tool.category.icon} {tool.category.name}
+                {tool.category.name}
               </span>
             )}
           </div>
