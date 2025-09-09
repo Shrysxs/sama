@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const query = q as string;
-    const suggestions: any = {
+    const suggestions: Record<string, any[]> = {
       tools: [],
       categories: [],
       tags: [],
@@ -67,11 +67,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (type === 'all' || type === 'tags') {
       const { data: popularTags } = await supabase.rpc('get_popular_tags', { limit_count: 50 });
       
-      const matchingTags = popularTags?.filter((tag: any) => 
+      const matchingTags = popularTags?.filter((tag: { tag_name: string; usage_count: number }) => 
         tag.tag_name.toLowerCase().includes(query.toLowerCase())
       ).slice(0, 5) || [];
 
-      suggestions.tags = matchingTags.map((tag: any) => ({
+      suggestions.tags = matchingTags.map((tag: { tag_name: string; usage_count: number }) => ({
         name: tag.tag_name,
         count: tag.usage_count,
         type: 'tag'
@@ -82,11 +82,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (type === 'all' || type === 'tech_stack') {
       const { data: popularTech } = await supabase.rpc('get_popular_tech_stack', { limit_count: 50 });
       
-      const matchingTech = popularTech?.filter((tech: any) => 
+      const matchingTech = popularTech?.filter((tech: { tech_name: string; usage_count: number }) => 
         tech.tech_name.toLowerCase().includes(query.toLowerCase())
       ).slice(0, 5) || [];
 
-      suggestions.tech_stack = matchingTech.map((tech: any) => ({
+      suggestions.tech_stack = matchingTech.map((tech: { tech_name: string; usage_count: number }) => ({
         name: tech.tech_name,
         count: tech.usage_count,
         type: 'tech'

@@ -70,7 +70,7 @@ async function handleGetAnalytics(req: NextApiRequest, res: NextApiResponse, sup
     }
 
     // Process daily data into chart format
-    const dailyBreakdown = dailyData?.reduce((acc: any, event: any) => {
+    const dailyBreakdown = dailyData?.reduce((acc: Record<string, any>, event: any) => {
       const date = new Date(event.created_at).toISOString().split('T')[0];
       if (!acc[date]) {
         acc[date] = {
@@ -105,7 +105,7 @@ async function handleGetAnalytics(req: NextApiRequest, res: NextApiResponse, sup
     }, {}) || {};
 
     // Get top referrers
-    const { data: referrers, error: referrersError } = await supabase
+    const { data: referrers } = await supabase
       .from('tool_analytics')
       .select('referrer')
       .eq('tool_id', toolId)
@@ -113,7 +113,7 @@ async function handleGetAnalytics(req: NextApiRequest, res: NextApiResponse, sup
       .lte('created_at', end_date)
       .not('referrer', 'is', null);
 
-    const referrerCounts = referrers?.reduce((acc: any, item: any) => {
+    const referrerCounts = referrers?.reduce((acc: Record<string, number>, item: any) => {
       const domain = item.referrer ? new URL(item.referrer).hostname : 'Direct';
       acc[domain] = (acc[domain] || 0) + 1;
       return acc;
@@ -125,20 +125,20 @@ async function handleGetAnalytics(req: NextApiRequest, res: NextApiResponse, sup
       .map(([domain, count]) => ({ domain, count }));
 
     // Get API usage if applicable
-    const { data: apiUsage, error: apiError } = await supabase
+    const { data: apiUsage } = await supabase
       .from('api_usage')
       .select('endpoint, request_count, created_at')
       .eq('tool_id', toolId)
       .gte('created_at', start_date)
       .lte('created_at', end_date);
 
-    const endpointUsage = apiUsage?.reduce((acc: any, usage: any) => {
+    const endpointUsage = apiUsage?.reduce((acc: Record<string, number>, usage: any) => {
       acc[usage.endpoint] = (acc[usage.endpoint] || 0) + usage.request_count;
       return acc;
     }, {}) || {};
 
     return res.status(200).json({
-      ...summary,
+      ...(summary || {}),
       daily_breakdown: Object.values(dailyBreakdown),
       top_referrers: topReferrers,
       endpoint_usage: endpointUsage,

@@ -93,11 +93,17 @@ async function handleGetTools(req: NextApiRequest, res: NextApiResponse, supabas
       return res.status(500).json({ error: 'Failed to fetch tools' });
     }
 
+    // Process the results to include computed fields
+    const processedTools = tools?.map((tool: any) => ({
+      ...tool,
+      rating_average: tool.reviews.reduce((sum: number, review: any) => sum + review.rating, 0) / tool.reviews.length
+    }));
+
     // Get facets for filtering
     const facets = await getFacets(supabase, { q, category, tags, pricing_model, tech_stack, rating_min });
 
     const result: SearchResult = {
-      tools: tools || [],
+      tools: processedTools || [],
       total_count: count || 0,
       page: pageNum,
       per_page: perPage,

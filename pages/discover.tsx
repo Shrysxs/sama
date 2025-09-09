@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 interface Tool {
@@ -46,7 +45,6 @@ interface SearchFilters {
 }
 
 export default function Discover() {
-  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -344,7 +342,7 @@ function ToolCard({ tool }: { tool: Tool }) {
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center space-x-3">
               {tool.logo_url ? (
-                <Image
+                <img
                   src={tool.logo_url}
                   alt={`${tool.name} logo`}
                   width={40}

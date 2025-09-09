@@ -92,7 +92,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Process the results to include computed fields
-    const processedTools = tools?.map(tool => ({
+    const processedTools = tools?.map((tool: any) => ({
       ...tool,
       review_count: tool.reviews?.length || 0,
       average_rating: tool.reviews?.length > 0 
@@ -102,7 +102,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })) || [];
 
     // Get search suggestions if query is provided
-    let suggestions = [];
+    let suggestions: any[] = [];
     if (q && processedTools.length < 5) {
       const { data: suggestionData } = await supabase
         .from('tools')
@@ -110,7 +110,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .or(`name.ilike.%${q}%,tags.cs.{${q}}`)
         .limit(5);
 
-      suggestions = suggestionData?.map(tool => ({
+      suggestions = suggestionData?.map((tool: any) => ({
         name: tool.name,
         tags: tool.tags
       })) || [];
