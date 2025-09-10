@@ -27,7 +27,12 @@ export default function Home() {
   }, [session, router])
 
   const handleLogin = async (provider: 'google' | 'github') => {
-    await supabase.auth.signInWithOAuth({ provider })
+    try {
+      const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : undefined
+      await supabase.auth.signInWithOAuth({ provider, options: { redirectTo } })
+    } catch (e) {
+      console.error('OAuth sign-in error:', e)
+    }
   }
 
   return (
