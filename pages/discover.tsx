@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
 interface Tool {
@@ -54,20 +54,7 @@ export default function Discover() {
     sort_order: 'desc'
   });
 
-  useEffect(() => {
-    fetchCategories();
-    performSearch();
-  }, []);
-
-  useEffect(() => {
-    const delayedSearch = setTimeout(() => {
-      performSearch();
-    }, 300);
-
-    return () => clearTimeout(delayedSearch);
-  }, [searchQuery, filters]);
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const response = await fetch('/api/categories');
       if (response.ok) {
@@ -77,9 +64,9 @@ export default function Discover() {
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
-  };
+  }, []);
 
-  const performSearch = async () => {
+  const performSearch = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -102,7 +89,20 @@ export default function Discover() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchQuery, filters]);
+
+  useEffect(() => {
+    fetchCategories();
+    performSearch();
+  }, [fetchCategories, performSearch]);
+
+  useEffect(() => {
+    const delayedSearch = setTimeout(() => {
+      performSearch();
+    }, 300);
+
+    return () => clearTimeout(delayedSearch);
+  }, [performSearch]);
 
   const handleFilterChange = (key: keyof SearchFilters, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }));

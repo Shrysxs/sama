@@ -1,19 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
 import type { GetServerSideProps } from 'next';
 import type { User } from '@supabase/supabase-js';
-import { Category, CreateToolRequest, PricingModel, ApiType, AuthType } from '@/types';
+import { Category, CreateToolRequest } from '@/types';
 
 type Props = {
   user: User;
   categories: Category[];
 };
 
-export default function SubmitTool({ user, categories }: Props) {
+export default function SubmitTool({ categories }: Props) {
   const router = useRouter();
-  const supabase = useSupabaseClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<CreateToolRequest>({
     name: '',

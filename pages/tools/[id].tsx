@@ -3,8 +3,8 @@ import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
-import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
-import { Tool, ToolReview } from '@/types';
+import { useSession } from '@supabase/auth-helpers-react';
+import { Tool } from '@/types';
 
 type Props = {
   tool: Tool;
@@ -12,7 +12,6 @@ type Props = {
 
 export default function ToolDetail({ tool }: Props) {
   const session = useSession();
-  const supabase = useSupabaseClient();
   const [isReviewing, setIsReviewing] = useState(false);
   const [reviewData, setReviewData] = useState({
     rating: 5,

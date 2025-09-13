@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
-import { Tool, CreateToolRequest, SearchFilters, SearchResult } from '@/types';
+import { CreateToolRequest } from '@/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const supabase = createPagesServerClient({ req, res });
@@ -100,7 +100,7 @@ async function handleGetTools(req: NextApiRequest, res: NextApiResponse, supabas
     }));
 
     // Get facets for filtering
-    const facets = await getFacets(supabase, { q, category, tags, pricing_model, tech_stack, rating_min });
+    const facets = await getFacets(supabase);
 
     const result = {
       tools: processedTools || [],
@@ -185,7 +185,7 @@ async function handleCreateTool(req: NextApiRequest, res: NextApiResponse, supab
   }
 }
 
-async function getFacets(supabase: any, filters: any) {
+async function getFacets(supabase: any) {
   try {
     // Get categories with counts
     const { data: categories } = await supabase

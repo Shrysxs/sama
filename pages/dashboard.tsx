@@ -17,8 +17,8 @@ type UserMetadata = { full_name?: string; avatar_url?: string };
 
 export default function DashboardPage({ user, initialTools, initialSubscriptions }: Props) {
   const supabase = useSupabaseClient();
-  const [tools, setTools] = useState<Tool[]>(initialTools);
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>(initialSubscriptions);
+  const [tools] = useState<Tool[]>(initialTools);
+  const [subscriptions] = useState<Subscription[]>(initialSubscriptions);
   const [activeTab, setActiveTab] = useState<'tools' | 'subscriptions' | 'analytics'>('tools');
   const [analytics, setAnalytics] = useState<any>(null);
   
@@ -76,7 +76,7 @@ export default function DashboardPage({ user, initialTools, initialSubscriptions
     // Avoid re-fetching if already loaded for current tools set
     if (analytics && Array.isArray(analytics) && analytics.length > 0) return;
     fetchAnalytics();
-  }, [activeTab, fetchAnalytics]);
+  }, [activeTab, fetchAnalytics, analytics]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
