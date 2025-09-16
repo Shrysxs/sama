@@ -1,0 +1,99 @@
+[
+  {
+    "id": "1",
+    "name": "PromptPolish",
+    "description": "Refine and A/B test prompts for LLMs with a simple interface. Compare outputs, track versions, and optimize your AI prompts for better results.",
+    "website_url": "https://promptpolish.dev",
+    "github_url": "https://github.com/sama/prompt-polish",
+    "category": "AI/ML",
+    "tags": ["llm", "prompt-engineering", "a-b-testing"],
+    "created_at": "2023-10-15T08:00:00Z"
+  },
+  {
+    "id": "2",
+    "name": "EmbedScout",
+    "description": "Search and manage vector embeddings with a simple UI. Supports multiple embedding models and similarity search out of the box.",
+    "website_url": "https://embeddingscout.com",
+    "github_url": "https://github.com/sama/embed-scout",
+    "category": "AI/ML",
+    "tags": ["embeddings", "vector-search", "semantic-search"],
+    "created_at": "2023-11-05T14:30:00Z"
+  },
+  {
+    "id": "3",
+    "name": "CronPilot",
+    "description": "Schedule and monitor background jobs for your micro SaaS. Get alerts for failed jobs and view execution history.",
+    "website_url": "https://cronpilot.io",
+    "github_url": "https://github.com/sama/cron-pilot",
+    "category": "DevOps",
+    "tags": ["cron", "scheduling", "background-jobs"],
+    "created_at": "2023-09-22T10:15:00Z"
+  },
+  {
+    "id": "4",
+    "name": "WebhookWatch",
+    "description": "Capture, replay, and inspect webhooks in development. Never miss a webhook during local development again.",
+    "website_url": "https://webhookwatch.dev",
+    "github_url": "https://github.com/sama/webhook-watch",
+    "category": "Development",
+    "tags": ["webhooks", "api", "testing"],
+    "created_at": "2023-12-01T16:45:00Z"
+  },
+  {
+    "id": "5",
+    "name": "DatasetDash",
+    "description": "Curate training datasets with collaborative labeling workflows. Perfect for ML teams working on custom models.",
+    "website_url": "https://datasetdash.com",
+    "category": "AI/ML",
+    "tags": ["datasets", "machine-learning", "data-labeling"],
+    "created_at": "2023-11-18T09:20:00Z"
+  },
+  {
+    "id": "6",
+    "name": "API Forge",
+    "description": "Generate REST APIs from JSON schemas instantly. Perfect for prototyping and mocking backend services.",
+    "website_url": "https://apiforge.dev",
+    "github_url": "https://github.com/sama/api-forge",
+    "category": "Development",
+    "tags": ["api", "prototyping", "mock-server"],
+    "created_at": "2023-10-30T11:10:00Z"
+  },
+  {
+    "id": "7",
+    "name": "AuthLite",
+    "description": "Drop-in email magic-link authentication for your prototypes and MVPs. No passwords, just magic links.",
+    "website_url": "https://authlite.dev",
+    "category": "Authentication",
+    "tags": ["auth", "security", "magic-links"],
+    "created_at": "2023-11-12T13:25:00Z"
+  },
+  {
+    "id": "8",
+    "name": "ImageFlow",
+    "description": "Transform and optimize images on-the-fly via URL parameters. Resize, crop, and apply filters with a simple API.",
+    "website_url": "https://imageflow.io",
+    "github_url": "https://github.com/sama/imageflow",
+    "category": "Media",
+    "tags": ["images", "optimization", "cdn"],
+    "created_at": "2023-10-05T15:40:00Z"
+  },
+  {
+    "id": "9",
+    "name": "MailTrail",
+    "description": "Preview and test your transactional emails during development. Never send test emails to real users by accident.",
+    "website_url": "https://mailtrail.dev",
+    "category": "Development",
+    "tags": ["email", "testing", "templates"],
+    "created_at": "2023-11-25T17:30:00Z"
+  },
+  {
+    "id": "10",
+    "name": "MeterMint",
+    "description": "Track usage metrics locally before wiring up billing. Understand your usage patterns before going to production.",
+    "website_url": "https://metermint.io",
+    "github_url": "https://github.com/sama/metermint",
+    "category": "Analytics",
+    "tags": ["metrics", "billing", "usage-tracking"],
+    "created_at": "2023-12-05T10:05:00Z"
+  }
+]

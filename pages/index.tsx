@@ -1,53 +1,85 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
+import Link from 'next/link';
 
 export default function Home() {
-  const session = useSession()
-  const router = useRouter()
-  const supabase = useSupabaseClient()
-
-  useEffect(() => {
-    if (session) {
-      router.replace('/dashboard')
-    }
-  }, [session, router])
-
-  const handleLogin = async (provider: 'google' | 'github') => {
-    try {
-      const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : undefined
-      await supabase.auth.signInWithOAuth({ provider, options: { redirectTo } })
-    } catch (e) {
-      console.error('OAuth sign-in error:', e)
-    }
-  }
-
   return (
-    <div className={`${geistSans.className} ${geistMono.className} font-sans min-h-screen grid place-items-center p-8`}>
-      <main className="flex flex-col gap-4 items-center text-center max-w-xl">
-        <Image className="dark:invert" src="/next.svg" alt="Sama" width={140} height={30} />
-        <h1 className="text-3xl font-semibold">Sama</h1>
-        <p className="text-neutral-600 dark:text-neutral-300">
-          Build tools fast. Validate faster. Sign in to start building.
-        </p>
-        <div className="flex gap-3 mt-4">
-          <button className="rounded-md border px-4 py-2" onClick={() => handleLogin('github')}>Sign in with GitHub</button>
-          <button className="rounded-md border px-4 py-2" onClick={() => handleLogin('google')}>Sign in with Google</button>
-        </div>
-      </main>
+    <div style={{
+      maxWidth: 800,
+      margin: '0 auto',
+      padding: '2rem',
+      textAlign: 'center'
+    }}>
+      <h1 style={{
+        fontSize: '2.5rem',
+        marginBottom: '1rem',
+        color: '#1a1a1a'
+      }}>
+        Welcome to Sama.dev
+      </h1>
+      
+      <p style={{
+        fontSize: '1.2rem',
+        color: '#333',
+        marginBottom: '2rem',
+        lineHeight: 1.6
+      }}>
+        Discover and share AI micro SaaS tools. 
+        Our platform helps you find the perfect tools to boost your productivity.
+      </p>
+      
+      <Link 
+        href="/discover"
+        style={{
+          display: 'inline-block',
+          backgroundColor: '#0066cc',
+          color: 'white',
+          padding: '0.8rem 1.6rem',
+          borderRadius: 4,
+          textDecoration: 'none',
+          fontSize: '1.1rem',
+          fontWeight: 500,
+          transition: 'background-color 0.2s'
+        }}
+        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#0052a3')}
+        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#0066cc')}
+      >
+        Explore Tools
+      </Link>
+      
+      <div style={{
+        marginTop: '3rem',
+        padding: '2rem',
+        backgroundColor: '#f8f9fa',
+        borderRadius: 8,
+        textAlign: 'left'
+      }}>
+        <h2 style={{
+          fontSize: '1.5rem',
+          marginBottom: '1rem',
+          color: '#1a1a1a'
+        }}>
+          Why Sama.dev?
+        </h2>
+        <ul style={{
+          listStyle: 'none',
+          padding: 0,
+          margin: 0
+        }}>
+          {[
+            '✓ Find vetted AI tools for developers',
+            '✓ Share your own tools with the community',
+            '✓ Get insights on tool performance and usage'
+          ].map((item, index) => (
+            <li key={index} style={{
+              padding: '0.5rem 0',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
-  )
+  );
 }
